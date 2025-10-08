@@ -9,7 +9,7 @@
         android:id="@+id/tvTurnoJugador"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Turno del jugador X"
+        android:text=""
         android:textSize="28sp"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
@@ -21,14 +21,15 @@
         android:id="@+id/gridTablero"
         android:layout_width="350dp"
         android:layout_height="350dp"
-        android:layout_marginTop="40dp"
-        android:rowCount="3"
-        android:columnCount="3"
+        android:layout_marginTop="112dp"
         android:background="#000000"
+        android:columnCount="3"
         android:padding="4dp"
-        app:layout_constraintTop_toBottomOf="@id/tvTurnoJugador"
+        android:rowCount="3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/tvTurnoJugador">
 
         <ImageButton
             android:id="@+id/ib00"

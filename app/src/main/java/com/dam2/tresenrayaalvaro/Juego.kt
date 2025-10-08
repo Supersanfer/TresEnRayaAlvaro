@@ -8,7 +8,7 @@ import com.dam2.tresenrayaalvaro.databinding.ActivityJuegoBinding
 
 class Juego : AppCompatActivity() {
     private lateinit var binding: ActivityJuegoBinding
-    private var contadorRondas = 1;
+    private var contadorRondas = 0;
     private lateinit var nombreJugadorUno: String
     private lateinit var nombreJugadorDos: String
     private lateinit var arrayTablero: Array<Array<ImageButton>>
@@ -23,6 +23,7 @@ class Juego : AppCompatActivity() {
             arrayOf(binding.ib10, binding.ib11, binding.ib12),
             arrayOf(binding.ib20, binding.ib21, binding.ib22)
         )
+        setearContador(nombreJugadorUno)
     }
 
     private fun setearContador(nombreJugador:String) {
@@ -30,16 +31,17 @@ class Juego : AppCompatActivity() {
     }
 
     fun onClicked(vista: View) {
-
-        val posicionPulsada = (vista as ImageButton).tag.toString()
-        if (contadorRondas % 2 != 0) {
-            setearContador(nombreJugadorUno)
+        var nombreJugador = "";
+        val botonPulsado = (vista as ImageButton)
+        val posicionPulsada = botonPulsado.tag.toString()
+        if (contadorRondas % 2 == 0) {
+            nombreJugador = nombreJugadorDos //El contador que se muestra es del SIGUIENTE jugador
             gestionarBoton(posicionPulsada, R.drawable.equis)
         } else {
-            setearContador(nombreJugadorDos)
+            nombreJugador = nombreJugadorUno
             gestionarBoton(posicionPulsada, R.drawable.circulo)
         }
-
+        setearContador(nombreJugador)
         contadorRondas += 1
     }
 
