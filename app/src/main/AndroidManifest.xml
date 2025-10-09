@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TresEnRayaAlvaro">
         <activity
+            android:name=".FinDePartida"
+            android:exported="false" />
+        <activity
             android:name=".Juego"
             android:exported="false" />
         <activity

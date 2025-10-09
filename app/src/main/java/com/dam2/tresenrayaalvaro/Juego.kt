@@ -1,5 +1,6 @@
 package com.dam2.tresenrayaalvaro
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
@@ -12,6 +13,8 @@ class Juego : AppCompatActivity() {
     private lateinit var nombreJugadorUno: String
     private lateinit var nombreJugadorDos: String
     private lateinit var arrayTablero: Array<Array<ImageButton>>
+    private var arrayNumeros = Array(3){ IntArray(3) {0} }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityJuegoBinding.inflate(layoutInflater)
@@ -31,43 +34,91 @@ class Juego : AppCompatActivity() {
     }
 
     fun onClicked(vista: View) {
-        var nombreJugador = "";
         val botonPulsado = (vista as ImageButton)
-        val posicionPulsada = botonPulsado.tag.toString()
+        botonPulsado.isEnabled = false
+
+        val jugadorActual: Int
+        val nombreProximoJugador: String
+        val recursoImagen: Int
+
+        // Determinamos el jugador actual (1 o 2)
         if (contadorRondas % 2 == 0) {
-            nombreJugador = nombreJugadorDos //El contador que se muestra es del SIGUIENTE jugador
-            gestionarBoton(posicionPulsada, R.drawable.equis)
+            jugadorActual = 1
+            recursoImagen = R.drawable.equis
+            nombreProximoJugador = nombreJugadorDos
         } else {
-            nombreJugador = nombreJugadorUno
-            gestionarBoton(posicionPulsada, R.drawable.circulo)
+            jugadorActual = 2
+            recursoImagen = R.drawable.circulo
+            nombreProximoJugador = nombreJugadorUno
         }
-        setearContador(nombreJugador)
+
+        val posicionPulsada = botonPulsado.tag.toString()
+        asignarValorEImagen(jugadorActual, posicionPulsada, recursoImagen)
+
         contadorRondas += 1
+
+        if (hayGanador()) {
+            val nombreGanador: String
+            if (jugadorActual == 1) {
+                nombreGanador = nombreJugadorUno
+            } else {
+                nombreGanador = nombreJugadorDos
+            }
+            mandarNombreAVentanaFinDePartida(nombreGanador)
+            finish()
+        } else if (contadorRondas == 9) {
+            mandarNombreAVentanaFinDePartida("empate")
+            finish()
+        } else {
+            setearContador(nombreProximoJugador)
+        }
     }
 
-    private fun gestionarBoton(posicionPulsada: String, img: Int) {
-        /*
-        when (posicionPulsada) {
-            "ib00" -> binding.ib00.setImageResource(img)
-            "ib01" -> binding.ib01.setImageResource(img)
-            "ib02" -> binding.ib02.setImageResource(img)
-            "ib10" -> binding.ib10.setImageResource(img)
-            "ib11" -> binding.ib11.setImageResource(img)
-            "ib12" -> binding.ib12.setImageResource(img)
-            "ib20" -> binding.ib20.setImageResource(img)
-            "ib21" -> binding.ib21.setImageResource(img)
-            "ib22" -> binding.ib22.setImageResource(img)
+    private fun mandarNombreAVentanaFinDePartida(resultado: String) {
+        val intent  = Intent(this, FinDePartida::class.java)
+        intent.putExtra("resultadoPartida", resultado)
+        startActivity(intent)
+    }
+
+    private fun hayGanador(): Boolean {
+        var hayGanador = false;
+
+        for(i in 0 until 3){
+            // Comprobamos horizontales
+            if(arrayNumeros[i][0]!=0
+                && arrayNumeros[i][0] == arrayNumeros[i][1]
+                && arrayNumeros[i][0] == arrayNumeros[i][2]){
+                hayGanador = true;
+            }
+            // Comprobamos verticales
+            if(arrayNumeros[0][i]!=0
+                && arrayNumeros[0][i] == arrayNumeros[1][i]
+                && arrayNumeros[0][i] == arrayNumeros[2][i]){
+                hayGanador = true
+            }
         }
-        */
+        // Comprobamos diagonales
+        if((arrayNumeros[0][0] != 0
+                    && arrayNumeros[0][0] == arrayNumeros[1][1]
+                    && arrayNumeros[0][0] == arrayNumeros[2][2])
+            ||
+            (arrayNumeros[0][2] !=0
+                    && arrayNumeros[0][2] == arrayNumeros[1][1]
+                    && arrayNumeros[0][2] == arrayNumeros[2][0])) {
+            hayGanador = true
+        }
+        return hayGanador;
+    }
+
+    private fun asignarValorEImagen(jugadorActual: Int, posicionPulsada: String, img: Int) {
         for (i in arrayTablero.indices) {
             for (j in arrayTablero[i].indices) {
-                if (arrayTablero[i][j].tag == posicionPulsada) {
+                if (arrayTablero[i][j].tag.toString() == posicionPulsada) {
                     arrayTablero[i][j].setImageResource(img)
+                    arrayNumeros[i][j] = jugadorActual
                     return
                 }
             }
         }
     }
-
 }
-
